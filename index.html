@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberPass — Password Strength Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="matrix-canvas"></canvas>
+  <div class="scan-line"></div>
+
+  <div class="container">
+    <header class="header">
+      <div class="logo-wrap">
+        <div class="logo-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 2L4 10V20C4 29.4 11.2 38.2 20 40C28.8 38.2 36 29.4 36 20V10L20 2Z" stroke="url(#shield-grad)" stroke-width="1.5" fill="none"/>
+            <path d="M14 20L18 24L26 16" stroke="#00f5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="shield-grad" x1="4" y1="2" x2="36" y2="40" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#00f5ff"/>
+                <stop offset="100%" stop-color="#7c3aed"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">CYBER<span class="logo-accent">PASS</span></span>
+          <span class="logo-sub">SECURITY ANALYZER v2.4.1</span>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="status-dot"></span>
+        <span class="status-label">SYSTEM ONLINE</span>
+      </div>
+    </header>
+
+    <div class="typing-headline">
+      <span id="typed-text"></span><span class="cursor-blink">_</span>
+    </div>
+
+    <div class="main-grid">
+      <div class="card card-primary">
+        <div class="card-label">// PASSWORD INPUT MODULE</div>
+
+        <div class="input-group">
+          <div class="input-wrap">
+            <span class="input-prefix">&#9656;</span>
+            <input type="password" id="password-input" class="password-field" placeholder="Enter password to analyze..." autocomplete="off" spellcheck="false" />
+            <button class="toggle-btn" id="toggle-vis" title="Toggle visibility">
+              <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="strength-display">
+          <div class="strength-meta">
+            <span class="strength-label-text">STRENGTH LEVEL</span>
+            <span class="strength-value" id="strength-value">—</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" id="bar-fill"></div>
+            <div class="bar-glow" id="bar-glow"></div>
+          </div>
+          <div class="bar-segments">
+            <span>WEAK</span><span>MEDIUM</span><span>STRONG</span><span>ULTRA</span>
+          </div>
+        </div>
+
+        <div class="crack-time-wrap">
+          <span class="crack-label">EST. CRACK TIME</span>
+          <span class="crack-value" id="crack-time">— enter password</span>
+        </div>
+
+        <div class="checklist" id="checklist">
+          <div class="check-item" data-check="length">
+            <span class="check-icon">○</span>
+            <span class="check-text">Minimum 8 characters</span>
+          </div>
+          <div class="check-item" data-check="upper">
+            <span class="check-icon">○</span>
+            <span class="check-text">Uppercase letter (A–Z)</span>
+          </div>
+          <div class="check-item" data-check="lower">
+            <span class="check-icon">○</span>
+            <span class="check-text">Lowercase letter (a–z)</span>
+          </div>
+          <div class="check-item" data-check="number">
+            <span class="check-icon">○</span>
+            <span class="check-text">Number (0–9)</span>
+          </div>
+          <div class="check-item" data-check="special">
+            <span class="check-icon">○</span>
+            <span class="check-text">Special symbol (!@#$...)</span>
+          </div>
+          <div class="check-item" data-check="length16">
+            <span class="check-icon">○</span>
+            <span class="check-text">16+ characters (Ultra tier)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-secondary">
+        <div class="card-label">// GENERATE & DEPLOY</div>
+
+        <div class="gen-options">
+          <div class="option-row">
+            <label class="option-label">LENGTH</label>
+            <input type="range" id="gen-length" min="8" max="32" value="16" class="slider" />
+            <span class="range-val" id="gen-length-val">16</span>
+          </div>
+          <div class="toggles-row">
+            <label class="toggle-chip active" data-opt="upper">A–Z</label>
+            <label class="toggle-chip active" data-opt="lower">a–z</label>
+            <label class="toggle-chip active" data-opt="numbers">0–9</label>
+            <label class="toggle-chip active" data-opt="symbols">!@#</label>
+          </div>
+        </div>
+
+        <div class="generated-output">
+          <div class="gen-label-row">
+            <span class="card-label" style="margin:0">// GENERATED PASSWORD</span>
+          </div>
+          <div class="gen-pw-box">
+            <span class="gen-pw-text" id="gen-pw-text">— — — — — — —</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-primary pulse-btn" id="gen-btn">
+            <span class="btn-icon">⚡</span> GENERATE
+          </button>
+          <button class="btn btn-secondary" id="copy-btn">
+            <span class="btn-icon" id="copy-icon">⧉</span>
+            <span id="copy-label">COPY</span>
+          </button>
+          <button class="btn btn-outline" id="use-btn" title="Load into analyzer">
+            ↑ USE
+          </button>
+        </div>
+
+        <div class="scanner-bar" id="scanner-bar">
+          <div class="scanner-line"></div>
+          <span class="scanner-text" id="scanner-text">READY</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-tips">
+      <div class="card-label">// SECURITY INTELLIGENCE</div>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <div class="tip-icon">🔑</div>
+          <div class="tip-body">
+            <div class="tip-title">USE A PASSPHRASE</div>
+            <div class="tip-desc">Chain 4+ random words for memorable ultra-secure passwords. "PurpleMonkeyDishwasher!" beats "P@ssw0rd" every time.</div>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">🛡️</div>
+          <div class="tip-body">
+            <div class="tip-title">NEVER REUSE</div>
+            <div class="tip-desc">Each account deserves a unique password. One breach exposes every account if passwords repeat.</div>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">🔒</div>
+          <div class="tip-body">
+            <div class="tip-title">USE A PASSWORD MANAGER</div>
+            <div class="tip-desc">Tools like Bitwarden or 1Password store thousands of unique passwords behind one master key.</div>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">📲</div>
+          <div class="tip-body">
+            <div class="tip-title">ENABLE 2FA ALWAYS</div>
+            <div class="tip-desc">Two-factor authentication adds a second wall even if your password is compromised. Use an authenticator app, not SMS.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>CYBERPASS © 2025</span>
+      <span class="footer-sep">|</span>
+      <span>NO DATA IS STORED OR TRANSMITTED</span>
+      <span class="footer-sep">|</span>
+      <span>ALL ANALYSIS RUNS LOCALLY</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
