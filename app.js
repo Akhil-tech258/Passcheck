@@ -131,6 +131,34 @@
     return 3;
   }
 
+  const breachAlert = document.getElementById('breach-alert');
+  const breachDesc = document.getElementById('breach-desc');
+  const entropyScore = document.getElementById('entropy-score');
+
+  const COMMON_WEAK_PASSWORDS = new Set([
+    'password', '123456', '12345678', '123456789', 'qwerty', '12345', '1234',
+    'password1', 'admin', 'welcome', 'login', 'iloveyou', 'secret', 'monkey',
+    'dragon', 'football', 'master', 'letmein', 'access', 'default', 'pass1234'
+  ]);
+
+  function checkVulnerability(pw) {
+    if (!pw) return null;
+    const lower = pw.toLowerCase();
+    if (COMMON_WEAK_PASSWORDS.has(lower)) {
+      return `"${pw}" appears in top globally breached credential databases. Crackable in < 1 millisecond.`;
+    }
+    if (/^[0-9]+$/.test(pw) && pw.length <= 8) {
+      return `Numeric-only PIN pattern is trivial to crack using basic automated dictionary attacks.`;
+    }
+    if (/(.)\1{3,}/.test(pw)) {
+      return `Repeated character pattern (${pw.match(/(.)\1{3,}/)[0]}) severely degrades cryptographic entropy.`;
+    }
+    if (/^(1234|2345|3456|4567|5678|6789|abcd|bcde|cdef|qwerty|asdf)/i.test(pw)) {
+      return `Sequential pattern detected at start of password. Highly susceptible to rule-based attacks.`;
+    }
+    return null;
+  }
+
   function analyze(pw) {
     checkItems.forEach(item => {
       const key = item.dataset.check;
@@ -150,7 +178,23 @@
       strengthValue.textContent = '—';
       crackTime.textContent = '— enter password';
       crackTime.style.color = 'var(--cyan)';
+      if (entropyScore) entropyScore.textContent = '— 0 bits';
+      if (breachAlert) breachAlert.style.display = 'none';
       return;
+    }
+
+    const entropy = Math.round(calcEntropy(pw));
+    const score = Math.min(100, Math.round((entropy / 80) * 100));
+    if (entropyScore) entropyScore.textContent = `${entropy} bits • ${score}/100`;
+
+    const vuln = checkVulnerability(pw);
+    if (breachAlert) {
+      if (vuln) {
+        breachAlert.style.display = 'flex';
+        breachDesc.textContent = vuln;
+      } else {
+        breachAlert.style.display = 'none';
+      }
     }
 
     const lvlIdx = getLevel(pw);
@@ -255,7 +299,36 @@
         copyBtn.style.borderColor = '';
         copyBtn.style.color = '';
       }, 2000);
-    } catch {}
+    } catch (e) {}
+  });
+  const WORDS_LIST = ['quantum', 'matrix', 'cipher', 'falcon', 'nebula', 'titan', 'stellar', 'plasma', 'vertex', 'shadow', 'vortex', 'hydra', 'phoenix', 'orbital', 'crypto'];
+
+  document.querySelectorAll('.preset-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const preset = btn.dataset.preset;
+      if (preset === 'pin') {
+        genLength.value = 6;
+        genLengthVal.textContent = '6';
+        opts.upper = false; opts.lower = false; opts.numbers = true; opts.symbols = false;
+        chips.forEach(c => c.classList.toggle('active', c.dataset.opt === 'numbers'));
+        animateGenerate();
+      } else if (preset === 'crypto') {
+        genLength.value = 24;
+        genLengthVal.textContent = '24';
+        opts.upper = true; opts.lower = true; opts.numbers = true; opts.symbols = true;
+        chips.forEach(c => c.classList.add('active'));
+        animateGenerate();
+      } else if (preset === 'passphrase') {
+        const randWords = [];
+        for (let i = 0; i < 4; i++) {
+          randWords.push(WORDS_LIST[Math.floor(Math.random() * WORDS_LIST.length)]);
+        }
+        const pin = Math.floor(Math.random() * 90 + 10);
+        const passphrase = randWords.join('-') + '-' + pin;
+        genPwText.textContent = passphrase;
+        scannerText.textContent = 'MEMORABLE PASSPHRASE READY';
+      }
+    });
   });
 
   animateGenerate();

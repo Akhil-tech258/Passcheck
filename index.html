@@ -62,6 +62,15 @@
           </div>
         </div>
 
+        <!-- Vulnerability & Breach Alert -->
+        <div id="breach-alert" class="breach-alert" style="display: none;">
+          <span class="breach-icon">⚠️</span>
+          <div class="breach-content">
+            <span class="breach-title">COMMON PATTERN / VULNERABILITY DETECTED</span>
+            <span class="breach-desc" id="breach-desc"></span>
+          </div>
+        </div>
+
         <div class="strength-display">
           <div class="strength-meta">
             <span class="strength-label-text">STRENGTH LEVEL</span>
@@ -76,9 +85,15 @@
           </div>
         </div>
 
-        <div class="crack-time-wrap">
-          <span class="crack-label">EST. CRACK TIME</span>
-          <span class="crack-value" id="crack-time">— enter password</span>
+        <div class="stats-dual-row">
+          <div class="crack-time-wrap">
+            <span class="crack-label">EST. CRACK TIME</span>
+            <span class="crack-value" id="crack-time">— enter password</span>
+          </div>
+          <div class="entropy-wrap">
+            <span class="crack-label">ENTROPY / SCORE</span>
+            <span class="entropy-value" id="entropy-score">— 0 bits</span>
+          </div>
         </div>
 
         <div class="checklist" id="checklist">
@@ -123,6 +138,12 @@
             <label class="toggle-chip active" data-opt="lower">a–z</label>
             <label class="toggle-chip active" data-opt="numbers">0–9</label>
             <label class="toggle-chip active" data-opt="symbols">!@#</label>
+          </div>
+          <div class="presets-row">
+            <span class="preset-label">QUICK PRESETS:</span>
+            <button type="button" class="preset-pill" data-preset="pin">🔢 6-Digit PIN</button>
+            <button type="button" class="preset-pill" data-preset="passphrase">🔤 Passphrase</button>
+            <button type="button" class="preset-pill" data-preset="crypto">🛡️ Ultra 24-Char</button>
           </div>
         </div>
 

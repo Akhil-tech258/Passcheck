@@ -669,4 +669,97 @@ body {
   .action-buttons { flex-wrap: wrap; }
   .btn-outline { flex: 1; }
   .tips-grid { grid-template-columns: 1fr; }
+  .stats-dual-row { flex-direction: column; gap: 10px; }
 }
+
+/* Breach Alert Banner */
+.breach-alert {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 45, 85, 0.12);
+  border: 1px solid var(--red);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 0 16px rgba(255, 45, 85, 0.2);
+  animation: pulse-red 2s infinite ease-in-out;
+}
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 45, 85, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(255, 45, 85, 0.45); }
+}
+.breach-icon { font-size: 1.2rem; line-height: 1; }
+.breach-content { display: flex; flex-direction: column; gap: 3px; }
+.breach-title {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--red);
+}
+.breach-desc {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #ff9fb2;
+}
+
+/* Stats Dual Row */
+.stats-dual-row {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+}
+.stats-dual-row .crack-time-wrap,
+.stats-dual-row .entropy-wrap {
+  flex: 1;
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.entropy-value {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--green);
+  letter-spacing: 0.05em;
+}
+
+/* Presets Row */
+.presets-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.preset-label {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+.preset-pill {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 5px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.preset-pill:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(0, 245, 255, 0.1);
+}
+
